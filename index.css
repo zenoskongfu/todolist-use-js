@@ -29,6 +29,7 @@ input {
   margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
 button {
@@ -66,8 +67,21 @@ li button {
   border: none;
   border-radius: 50%;
   cursor: pointer;
+  height: 30px;
+  width: 30px;
+  font-size: 12px;
 }
 
 li button:hover {
   background-color: #e53935;
+}
+
+/* 在任务完成时应用的样式 */
+.completed {
+  text-decoration: line-through;
+  color: #888;
+}
+
+input.complete-checkbox {
+  width: fit-content;
 }

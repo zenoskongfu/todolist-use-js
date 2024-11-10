@@ -1,5 +1,3 @@
-// script.js
-
 document.addEventListener("DOMContentLoaded", () => {
 	const taskInput = document.getElementById("taskInput");
 	const addTaskButton = document.getElementById("addTaskButton");
@@ -9,18 +7,26 @@ document.addEventListener("DOMContentLoaded", () => {
 	function loadTasks() {
 		const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 		tasks.forEach((task) => {
-			addTaskToList(task);
+			addTaskToList(task.text, task.completed);
 		});
 	}
 
 	// 添加任务到列表
-	function addTaskToList(task) {
+	function addTaskToList(task, completed = false) {
 		const li = document.createElement("li");
 		li.innerHTML = `
-          <span contenteditable="true" class="task-text">${task}</span>
+					<input type="checkbox" class="complete-checkbox" ${completed ? "checked" : ""}/>
+          <span contenteditable="true" class="task-text ${completed ? "completed" : ""}">${task}</span>
           <button class="delete-btn">X</button>
       `;
 		taskList.appendChild(li);
+
+		// 绑定完成按钮事件
+		const completeBtn = li.querySelector(".complete-checkbox");
+		completeBtn.addEventListener("change", () => {
+			toggleTaskCompletion(task);
+			li.querySelector(".task-text").classList.toggle("completed");
+		});
 
 		// 绑定删除按钮事件
 		const deleteBtn = li.querySelector(".delete-btn");
@@ -41,29 +47,36 @@ document.addEventListener("DOMContentLoaded", () => {
 		const task = taskInput.value.trim();
 		if (task) {
 			addTaskToList(task);
-			saveTask(task);
+			saveTask(task, false);
 			taskInput.value = ""; // 清空输入框
 		}
+	}
+
+	// 切换任务完成状态
+	function toggleTaskCompletion(taskToToggle) {
+		let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+		tasks = tasks.map((task) => (task.text === taskToToggle ? { ...task, completed: !task.completed } : task));
+		localStorage.setItem("tasks", JSON.stringify(tasks));
 	}
 
 	// 删除任务
 	function deleteTask(taskToDelete) {
 		let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-		tasks = tasks.filter((task) => task !== taskToDelete);
+		tasks = tasks.filter((task) => task.text !== taskToDelete);
 		localStorage.setItem("tasks", JSON.stringify(tasks));
 	}
 
 	// 更新任务
-	function updateTask(oldTask, newTask) {
+	function updateTask(oldTask, newTaskText) {
 		let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-		tasks = tasks.map((task) => (task === oldTask ? newTask : task));
+		tasks = tasks.map((task) => (task.text === oldTask ? { ...task, text: newTaskText } : task));
 		localStorage.setItem("tasks", JSON.stringify(tasks));
 	}
 
 	// 保存任务到本地存储
-	function saveTask(task) {
+	function saveTask(task, completed) {
 		let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-		tasks.push(task);
+		tasks.push({ text: task, completed });
 		localStorage.setItem("tasks", JSON.stringify(tasks));
 	}
 
