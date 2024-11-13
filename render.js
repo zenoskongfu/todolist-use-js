@@ -12,7 +12,7 @@ window.addEventListener("load", () => {
 		li.innerHTML = `
 					<input type="checkbox" class="complete-checkbox" ${completed ? "checked" : ""}/>
           <span contenteditable="true" class="task-text ${completed ? "completed" : ""}">${text}</span>
-          <button class="delete-btn">X</button>
+					<button class="delete-btn">X</button>
       `;
 
 		ulDOM.appendChild(li);
@@ -32,10 +32,19 @@ window.addEventListener("load", () => {
 		});
 
 		// 监听任务编辑
-		// const taskText = li.querySelector(".task-text");
-		// taskText.addEventListener("blur", () => {
-		// 	updateTask(task, taskText.textContent);
-		// });
+		const taskText = li.querySelector(".task-text");
+		function editCallback() {
+			const newTask = { ...task, text: taskText.textContent };
+			updateTask(newTask);
+		}
+		taskText.addEventListener("blur", () => {
+			editCallback();
+		});
+		taskText.addEventListener("keypress", (e) => {
+			if (e.key === "Enter") {
+				editCallback();
+			}
+		});
 	}
 
 	function renderTasks() {

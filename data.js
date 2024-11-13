@@ -65,13 +65,12 @@ function deleteTask(taskToDelete) {
 }
 
 // 更新任务
-function updateTask(oldTask, newTask) {
+function updateTask(newTask) {
 	taskList.value = taskList.value.map((task) => {
-		if (oldTask.id !== newTask.id) {
+		if (task.id !== newTask.id) {
 			return task;
 		}
-		task.text = newTask.text;
-		return task;
+		return newTask;
 	});
 }
 

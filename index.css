@@ -85,3 +85,7 @@ li button:hover {
 input.complete-checkbox {
   width: fit-content;
 }
+
+.hidden {
+  display: none;
+}
